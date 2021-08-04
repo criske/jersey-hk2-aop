@@ -1,4 +1,9 @@
 A proof of concept for Jersey as an alternative way to create aop proxies, inspired by Spring.
+
+Supports only JDK dynamic proxies for now. 
+
+There are plans to include CGLib for class proxies and AspectJ pointcut expressions for filters.
+
 ```java
 interface SomeService {
     void foo(String arg);
@@ -7,8 +12,10 @@ interface SomeService {
 class SomeServiceImpl implements SomeService {
     //...
 }
+```
 
-class SomeService implements Aspect {
+```java
+class SomeServiceAspect implements Aspect {
     
     @Override
     public Filter typeFilter() {
