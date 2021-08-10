@@ -30,6 +30,11 @@
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-hk2</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>1.9.8.M1</version>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
