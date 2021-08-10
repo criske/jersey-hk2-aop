@@ -2,7 +2,7 @@ A proof of concept for Jersey as an alternative way to create aop proxies, inspi
 
 Supports only JDK dynamic proxies for now.
 
-There are plans to include CGLib for class proxies and AspectJ pointcut expressions for filters.
+There are plans to include CGLib for class proxies ~~and AspectJ pointcut expressions for filters~~.
 
 ```java
 interface SomeService {
@@ -39,7 +39,7 @@ class SomeServiceAspect implements Aspect {
 }
 ```
 
-It also supports AspectJ pointcut expressions:
+It also supports AspectJ pointcut expressions (see this [test](https://github.com/criske/jersey-hk2-aop/blob/master/src/test/java/pcf/crskdev/hk2/aop/PointcutExpressionAspectTest.java)):
 
 ```java
 public interface Dummy {
