@@ -1,19 +1,18 @@
 package pcf.crskdev.hk2.aop;
 
 import org.glassfish.hk2.api.Filter;
-import org.glassfish.hk2.api.IterableProvider;
 import org.glassfish.hk2.api.ServiceLocator;
-import org.glassfish.hk2.internal.ActiveDescriptorBuilderImpl;
 import org.glassfish.hk2.utilities.BuilderHelper;
-import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import pcf.crskdev.hk2.aop.util.AdviceCalledInspector;
+import pcf.crskdev.hk2.aop.util.MockDescriptors;
+import pcf.crskdev.hk2.aop.util.ServiceLocatorAopProxyBinderSetup;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,40 +20,13 @@ public final class AopProxyBinderTest {
 
     @Test
     public void shouldInjectAopProxy() {
-        DummyInspector inspector = Mockito.mock(DummyInspector.class);
-        ServiceLocator serviceLocator =
-            ServiceLocatorUtilities.createAndPopulateServiceLocator();
-        ServiceLocatorUtilities.addOneConstant(
-            serviceLocator,
-            inspector,
-            null,
-            DummyInspector.class
-        );
-        ServiceLocatorUtilities.addOneConstant(
-            serviceLocator,
-            Mockito.mock(Dummy.class),
-            null,
-            Dummy.class
-        );
-        ServiceLocatorUtilities.addOneDescriptor(
-            serviceLocator,
-            new ActiveDescriptorBuilderImpl(DummyAspect.class)
-                .in(Singleton.class)
-                .asType(DummyAspect.class)
-                .to(Aspect.class)
-                .build()
-        );
 
-        IterableProvider<Aspect> aspects = Mockito.mock(IterableProvider.class);
-        Mockito.when(aspects.iterator()).thenReturn(
-            List.of(
-                serviceLocator.getService(Aspect.class)
-            ).iterator()
+        var setup = new ServiceLocatorAopProxyBinderSetup(
+            DummyAspect.class,
+            MockDescriptors.create(Dummy.class)
         );
-        ServiceLocatorUtilities.bind(
-            serviceLocator,
-            new AopProxyBinder(serviceLocator, aspects)
-        );
+        ServiceLocator serviceLocator = setup.getServiceLocator();
+        var inspector = setup.getInspector();
 
         Dummy dummy = serviceLocator.getService(Dummy.class);
 
@@ -81,14 +53,10 @@ public final class AopProxyBinderTest {
         void hello();
     }
 
-    interface DummyInspector {
-        void called(AdviceType adviceType);
-    }
-
     static class DummyAspect implements Aspect {
 
         @Inject
-        private DummyInspector inspector;
+        private AdviceCalledInspector inspector;
 
         @Override
         public Filter typeFilter() {

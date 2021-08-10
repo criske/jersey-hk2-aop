@@ -29,7 +29,7 @@ public final class AopProxyBinder extends AbstractBinder {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    protected final void configure() {
+    protected void configure() {
 
         for (Aspect aspect : aspects) {
 
